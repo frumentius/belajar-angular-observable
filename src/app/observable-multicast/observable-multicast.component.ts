@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, Observer, of, from } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable, Observer, of, from ,Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-observable-multicast',
   templateUrl: './observable-multicast.component.html',
   styleUrls: ['./observable-multicast.component.css']
 })
-export class ObservableMulticastComponent implements OnInit {
+export class ObservableMulticastComponent implements OnInit, OnDestroy {
+  firstSub!: null | Subscription;
+  secondSub!: null | Subscription;
   sequence;
   multicastSequence;
   constructor() {
@@ -14,7 +16,7 @@ export class ObservableMulticastComponent implements OnInit {
     this.multicastSequence = new Observable(this.multicastSequenceSubscriber());
   }
   sequenceSubscriber(observer: Observer<number>) {
-    const seq = [1, 2, 3];
+    const seq = [1, 2, 3, 4, 5, 6];
     let clearTimer: VoidFunction | undefined;
 
     // Will run through an array of numbers, emitting one value
@@ -41,7 +43,7 @@ export class ObservableMulticastComponent implements OnInit {
     };
   }
   multicastSequenceSubscriber() {
-    const seq = [1, 2, 3];
+    const seq = [1, 2, 3, 4, 5, 6];
     // Keep track of each observer (one for every active subscription)
     const observers: Observer<unknown>[] = [];
     // Still a single timer because there will only ever be one
@@ -98,7 +100,7 @@ export class ObservableMulticastComponent implements OnInit {
 
   ngOnInit(): void {
     //First Subscribe
-    /* this.sequence.subscribe({
+    /* this.firstSub = this.sequence.subscribe({
       next(num) {
         let d = new Date();
         let timeStr = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds() + '.' + d.getMilliseconds();
@@ -107,7 +109,7 @@ export class ObservableMulticastComponent implements OnInit {
       error(err) { console.log(err); },
       complete() { console.log('Finished 1st sequence'); }
     }); */
-    this.multicastSequence.subscribe({
+    this.firstSub = this.multicastSequence.subscribe({
       next(num) {
         let d = new Date();
         let timeStr = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds() + '.' + d.getMilliseconds();
@@ -119,7 +121,7 @@ export class ObservableMulticastComponent implements OnInit {
 
     //Second Subscribe after 500ms
     /* setTimeout(() => {
-      this.sequence.subscribe({
+      this.secondSub = this.sequence.subscribe({
         next(num) {
           let d = new Date();
           let timeStr = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds() + '.' + d.getMilliseconds();
@@ -131,7 +133,7 @@ export class ObservableMulticastComponent implements OnInit {
     }, 500); */
     //Second Subscribe after 1500ms, should miss the firs value.
     setTimeout(() => {
-      this.multicastSequence.subscribe({
+      this.secondSub = this.multicastSequence.subscribe({
         next(num) {
           let d = new Date();
           let timeStr = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds() + '.' + d.getMilliseconds();
@@ -141,5 +143,9 @@ export class ObservableMulticastComponent implements OnInit {
         complete() { console.log('Finished 2nd sequence'); }
       });
     }, 1500);
+  }
+  ngOnDestroy(): void {
+    if(this.firstSub) this.firstSub.unsubscribe();
+    if(this.secondSub) this.secondSub.unsubscribe();
   }
 }

@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, Observer, of, from } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable, Observer, of, from, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-observable-basic',
   templateUrl: './observable-basic.component.html',
   styleUrls: ['./observable-basic.component.css']
 })
-export class ObservableBasicComponent implements OnInit {
+export class ObservableBasicComponent implements OnInit, OnDestroy {
+  varSub!: null | Subscription;
   sequence;
   constructor() {
     /* These are the same way to create an observable. */
-    this.sequence = new Observable(this.sequenceSubscriber);
+    this.sequence = new Observable<number>(this.sequenceSubscriber);
     //this.sequence = of(1,2,3);
     //this.sequence = from([7,8,9]);
   }
@@ -26,9 +27,9 @@ export class ObservableBasicComponent implements OnInit {
     return { unsubscribe() { } };
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     //Best way to write this subscribe function.
-    this.sequence.subscribe({
+    this.varSub = this.sequence.subscribe({
       next: (num: number) => console.log('Observer got a next value: ' + num),
       error: (err: Error) => console.error('Observer got an error: ' + err),
       complete: () => console.log('Observer got a complete notification'),
@@ -45,5 +46,8 @@ export class ObservableBasicComponent implements OnInit {
       err => console.error('Observer got an error: ' + err),
       () => console.log('Observer got a complete notification')
     ); */
+  }
+  ngOnDestroy(): void {
+    if(this.varSub) this.varSub.unsubscribe();
   }
 }
