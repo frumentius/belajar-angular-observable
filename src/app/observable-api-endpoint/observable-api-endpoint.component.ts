@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { from, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-observable-api-endpoint',
@@ -8,16 +7,26 @@ import { from, Observable } from 'rxjs';
   styleUrls: ['./observable-api-endpoint.component.css']
 })
 export class ObservableApiEndpointComponent implements OnInit {
-  constructor(private http: HttpClient) { }
-  ngOnInit(): void {
-    const data = from(this.http.get<{ type: string; price: number }[]>(
-      '/assets/shipping.json'
-    ));
-    // Subscribe to begin listening for async result
-    data.subscribe({
-      next(response) { console.log(response); },
-      error(err) { console.error('Error: ' + err); },
-      complete() { console.log('Completed'); }
-    });
+  shipping: ShippingObj[];
+  shipping$;
+  constructor(private http: HttpClient) {
+    this.shipping = [];
+    this.shipping$ = this.http.get<ShippingObj[]>('/assets/shipping.json'); // this.http.get returning an Observable.
   }
+  ngOnInit(): void {
+    // Subscribe to begin listening for async result
+    this.shipping$.subscribe({
+      next: (response) => {
+        this.shipping = response;
+      },
+      error: (err) => {
+        console.log(err.message);
+      },
+      complete: () => console.log('Complete!')
+  });
+  }
+}
+interface ShippingObj {
+  type: string;
+  price: number;
 }

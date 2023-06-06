@@ -27,17 +27,17 @@ export class ObservableBasicComponent implements OnInit {
   }
 
   ngOnInit() {
+    //Best way to write this subscribe function.
     this.sequence.subscribe({
-      next(num) { console.log(num); },
-      error(err) { console.log(err); },
-      complete() { console.log('Finished sequence'); }
-    });
-
-    //Other ways to write this subscribe function.
-    /* this.sequence.subscribe({
       next: (num: number) => console.log('Observer got a next value: ' + num),
       error: (err: Error) => console.error('Observer got an error: ' + err),
       complete: () => console.log('Observer got a complete notification'),
+    });
+    //Not the best way to write, only for simple example. Can't assign class attribute.
+    /* this.sequence.subscribe({
+      next(num) { console.log(num); },
+      error(err) { console.log(err); },
+      complete() { console.log('Finished sequence'); }
     }); */
     //Not the best way to write the function, might be deprecated.
     /* this.sequence.subscribe(
