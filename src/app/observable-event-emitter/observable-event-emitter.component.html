@@ -1,0 +1,7 @@
+<div class="zippy">
+    <button type="button" (click)="toggle()">Toggle</button>
+    <div [hidden]="!visible">
+        Test
+        <ng-content></ng-content>
+    </div>
+</div>

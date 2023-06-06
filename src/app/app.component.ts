@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { every } from 'rxjs';
 
 
 @Component({
@@ -6,4 +7,11 @@ import { Component } from '@angular/core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent { }
+export class AppComponent {
+  onClose($event: any) {
+    console.log("Close", $event);
+  }
+  onOpen($event: any) {
+    console.log("Open", $event);
+  }
+}

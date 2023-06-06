@@ -14,7 +14,6 @@ export class ObservableApiEndpointComponent implements OnInit {
     this.shipping$ = this.http.get<ShippingObj[]>('/assets/shipping.json'); // this.http.get returning an Observable.
   }
   ngOnInit(): void {
-    // Subscribe to begin listening for async result
     this.shipping$.subscribe({
       next: (response) => {
         this.shipping = response;

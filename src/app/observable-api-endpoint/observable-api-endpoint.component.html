@@ -1,6 +1,6 @@
 <div *ngFor="let item of shipping; index as i; first as isFirst">
     <br *ngIf="!isFirst" />
-    No.: {{ i }}<br/>
+    No.: {{ i+1 }}<br/>
     Type: {{ item.type }}<br/>
     Price: {{ item.price }}<br/>
 </div>
